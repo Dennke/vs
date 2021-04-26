@@ -13,18 +13,22 @@ public class broadcast {
     }
 
     public static void broadcast(int port) throws IOException, InterruptedException {
-        DatagramSocket socket = new DatagramSocket();
-        socket.setBroadcast(true);
-        String date = new Date().toString();
-        DatagramPacket packet = new DatagramPacket(date.getBytes(), date.length(), getBroadcastAddress(), port);
-        System.out.println("Sending a broadcast every 20 seconds");
-        while(true){
-            date = new Date().toString();
-            packet.setData(date.getBytes());
-            packet.setLength(date.length());
-            socket.send(packet);
-            Thread.sleep(20000);
+        try(DatagramSocket socket = new DatagramSocket();) {
+            socket.setBroadcast(true);
+            String date = new Date().toString();
+            DatagramPacket packet = new DatagramPacket(date.getBytes(), date.length(), getBroadcastAddress(), port);
+            System.out.println("Sending a broadcast every 20 seconds");
+            while (true) {
+                date = new Date().toString();
+                packet.setData(date.getBytes());
+                packet.setLength(date.length());
+                socket.send(packet);
+                Thread.sleep(20000);
+            }
         }
+        catch(Exception e){
+            System.err.println(e);
+            }
     }
 
 
