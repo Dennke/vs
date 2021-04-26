@@ -8,7 +8,7 @@ public class broadcast {
 
     final static int PORT = 8080;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args){
         broadcast(PORT);
     }
 
