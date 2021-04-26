@@ -1,22 +1,22 @@
 import java.io.IOException;
 import java.net.*;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 public class broadcast {
 
     final static int PORT = 8080;
-    final static String IPADDRESS = "192.168.178.42";
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        broadcast(IPADDRESS, PORT);
+        broadcast(PORT);
     }
 
-    public static void broadcast(String ipAddress, int port) throws IOException, InterruptedException {
+    public static void broadcast(int port) throws IOException, InterruptedException {
         DatagramSocket socket = new DatagramSocket();
         socket.setBroadcast(true);
         String date = new Date().toString();
-        DatagramPacket packet = new DatagramPacket(date.getBytes(), date.length(), getBroadcastAddress(ipAddress), port);
+        DatagramPacket packet = new DatagramPacket(date.getBytes(), date.length(), getBroadcastAddress(), port);
         System.out.println("Sending a broadcast every 20 seconds");
         while(true){
             date = new Date().toString();
@@ -28,13 +28,18 @@ public class broadcast {
     }
 
 
-    public static InetAddress getBroadcastAddress(String ipAddress) throws UnknownHostException, SocketException {
-        InetAddress address = InetAddress.getByName(ipAddress);
-        NetworkInterface networkInterface = NetworkInterface.getByInetAddress(address);
-        for(InterfaceAddress add : networkInterface.getInterfaceAddresses()){
-            if(add.getBroadcast() == null)
-                continue;
-            return (add.getBroadcast());
+    public static InetAddress getBroadcastAddress() throws IOException {
+        Enumeration<NetworkInterface> interfaceEnumeration = NetworkInterface.getNetworkInterfaces();
+
+        while (interfaceEnumeration.hasMoreElements()) {
+            NetworkInterface networkInterface = interfaceEnumeration.nextElement();
+            if (!networkInterface.isLoopback() || networkInterface.getMTU() > 0) {
+                for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                    if (interfaceAddress.getBroadcast() != null) {
+                        return interfaceAddress.getBroadcast();
+                    }
+                }
+            }
         }
         throw new NoSuchElementException("Couldn't find a broadcast address");
     }
