@@ -12,8 +12,8 @@ public class broadcast {
         broadcast(PORT);
     }
 
-    public static void broadcast(int port) throws IOException, InterruptedException {
-        try(DatagramSocket socket = new DatagramSocket();) {
+    public static void broadcast(int port){
+        try(DatagramSocket socket = new DatagramSocket()) {
             socket.setBroadcast(true);
             String date = new Date().toString();
             DatagramPacket packet = new DatagramPacket(date.getBytes(), date.length(), getBroadcastAddress(), port);

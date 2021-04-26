@@ -7,7 +7,7 @@ public class server {
 
     final static int PORT = 8080;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         try(DatagramSocket socket = new DatagramSocket(PORT)) {
             byte[] receive = new byte[50];
             DatagramPacket packet = new DatagramPacket(receive, receive.length);
