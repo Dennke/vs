@@ -1,8 +1,6 @@
 import java.io.IOException;
 import java.net.*;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class broadcast {
 
@@ -34,17 +32,28 @@ public class broadcast {
 
     public static InetAddress getBroadcastAddress() throws IOException {
         Enumeration<NetworkInterface> interfaceEnumeration = NetworkInterface.getNetworkInterfaces();
-
+        ArrayList<InetAddress> addressList = new ArrayList<>();
         while (interfaceEnumeration.hasMoreElements()) {
             NetworkInterface networkInterface = interfaceEnumeration.nextElement();
             if (!networkInterface.isLoopback() && networkInterface.getMTU() > 0) {
                 for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                     if (interfaceAddress.getBroadcast() != null) {
-                        return interfaceAddress.getBroadcast();
+                       addressList.add(interfaceAddress.getBroadcast());
                     }
                 }
             }
         }
-        throw new NoSuchElementException("Couldn't find a broadcast address");
+        if(addressList.isEmpty()){
+            throw new NoSuchElementException("Couldn't find a broadcast address");
+        }
+        int counter = 0;
+        for(InetAddress i : addressList){
+            System.out.println("[" + counter + "] " + i);
+            counter++;
+        }
+        System.out.println("Choose the desired network address using the corresponding number:");
+        Scanner scanner = new Scanner(System.in);
+        return(addressList.get(scanner.nextInt()));
+
     }
 }
