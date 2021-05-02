@@ -37,7 +37,7 @@ public class broadcast {
 
         while (interfaceEnumeration.hasMoreElements()) {
             NetworkInterface networkInterface = interfaceEnumeration.nextElement();
-            if (!networkInterface.isLoopback() || networkInterface.getMTU() > 0) {
+            if (!networkInterface.isLoopback() && networkInterface.getMTU() > 0) {
                 for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                     if (interfaceAddress.getBroadcast() != null) {
                         return interfaceAddress.getBroadcast();
